@@ -2,8 +2,6 @@
 #include <thrust/sort.h>
 #include <thrust/copy.h>
 
-#include "Rth.h"
-
 #include "Rcpp.h"
 
 struct simple_negate : public thrust::unary_function<double,double>
