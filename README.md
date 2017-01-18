@@ -80,3 +80,20 @@ Rcpp::NumericVector myfunctor(Rcpp::NumericVector x) {
 
 }
 ```
+
+### Performance
+```{r}
+set.seed(1)
+
+x = runif(1e7)
+
+system.time(y <- sort(x))
+#>    user  system elapsed 
+#>   1.328   0.004   1.332
+system.time(z <- mysort(x))
+#>    user  system elapsed 
+#>   0.036   0.124   0.163
+
+all.equal(y, z)
+#> [1] TRUE
+```
