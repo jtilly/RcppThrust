@@ -1,0 +1,14 @@
+Package: RcppThrust
+Type: Package
+Title: RcppThrust: Parallel R with Thrust and Rcpp
+Version: 0.1-0
+Description: Thrust is a powerful tool for parallel programming. This package
+    demonstrates how to use Thrust in a package that otherwise integrates C++
+    code using Rcpp. This package is based on Rth by Norm Matloff and Drew
+    Schmidt.
+License: GPL (>= 2)
+Depends: Rcpp
+SystemRequirements: GNU make. Nvidia's CUDA toolkit (>= release 8.0).
+Author: Jan Tilly
+Maintainer: Jan Tilly <jantilly@gmail.com>
+Suggests: testthat

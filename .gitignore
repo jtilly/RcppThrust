@@ -1,0 +1,10 @@
+*.o
+.Rbuildignore
+*.mod
+*.so
+*.log
+*.status
+*~
+src/Makevars
+.Rproj.user
+*.Rproj

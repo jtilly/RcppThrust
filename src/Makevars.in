@@ -1,0 +1,41 @@
+PKG_CXXFLAGS = -I../inst/include/ \
+    -I`${R_HOME}/bin/Rscript -e "cat(file.path(system.file(package = \"Rcpp\"), \"include\"))"`
+
+PKG_LIBS = @RTH_LDFLAGS@
+
+PKG_CPPFLAGS = @RTH_CPPFLAGS@
+
+CPP_SOURCES := $(wildcard *.cpp)
+R_OBJS := $(patsubst %.cpp, %.o, $(CPP_SOURCES))
+
+OBJECTS = $(R_OBJS)
+
+BACKEND = @BACKEND@
+all: $(SHLIB)
+
+RcppExports.cpp:
+	${R_HOME}/bin/Rscript -e "Rcpp::compileAttributes(\"../\")"
+
+ifeq "$(BACKEND)" "CUDA"
+
+NVCC = @NVCC@
+CUDA_INCS = @CUDA_INCS@
+
+RcppExports.o: RcppExports.cpp
+	$(NVCC) -DGPU -x cu -c -Xcompiler "-fPIC" $(CUDA_INCS) $(PKG_CXXFLAGS) $< -o $@
+
+%.o: %.cpp
+	$(NVCC) -DGPU -x cu -c -Xcompiler "-fPIC" $(CUDA_INCS) $(PKG_CXXFLAGS) $< -o $@
+
+RcppThrust.so: $(OBJECTS)
+	$(NVCC) --shared $(OBJECTS) -o $@
+
+else
+
+$(SHLIB): $(OBJECTS)
+
+endif
+
+clean:
+	@rm -rf *.o *.so *.dll \
+		Makevars $(USER_CONF) $(SHLIB) $(OBJECTS)
