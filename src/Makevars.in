@@ -7,30 +7,24 @@ PKG_LIBS = @RTH_LDFLAGS@
 
 PKG_CPPFLAGS = @RTH_CPPFLAGS@
 
-BACKEND = @BACKEND@
-
-NVCC = @NVCC@
-
-CUDA_INCS = @CUDA_INCS@
-
 CPP_SOURCES := $(wildcard *.cpp)
 R_OBJS := $(patsubst %.cpp, %.o, $(CPP_SOURCES))
 
 all: $(SHLIB)
 
-RcppExports.cpp:
+RcppExports: $(CPP_SOURCES)
 	${R_HOME}/bin/Rscript -e "Rcpp::compileAttributes(\"../\")"
 
-ifeq "$(BACKEND)" "CUDA"
+ifeq "@BACKEND@" "CUDA"
 
-%.o: %.cpp
-	$(NVCC) -DGPU -x cu -c -Xcompiler "-fPIC" $(CUDA_INCS) $(PKG_CXXFLAGS) $< -o $@
+%.o: %.cpp RcppExports
+	@NVCC@ -DGPU -x cu -c -Xcompiler "-fPIC" @CUDA_INCS@ $(PKG_CXXFLAGS) $< -o $@
 
 RcppThrust.so: $(R_OBJS)
-	$(NVCC) --shared $(R_OBJS) -o $@
+	@NVCC@ --shared $(R_OBJS) -o $@
 
 else
 
-$(SHLIB): $(R_OBJS)
+$(SHLIB): $(R_OBJS) RcppExports
 
 endif
