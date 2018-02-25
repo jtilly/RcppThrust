@@ -9,21 +9,21 @@ Based on Norm Matloff and Drew Schmidt's Rth package (see https://github.com/Rth
  * One issue in Rcpp needs to be resolved for this package to compile with `nvcc`. In Version `0.12.9` of Rcpp, in `system.file("include/Rcpp/vector/proxy.h", package="Rcpp")`, [Line 98](https://github.com/RcppCore/Rcpp/blob/0.12.9/inst/include/Rcpp/vector/proxy.h#L98) must be changed to `string_name_proxy& operator=(string_name_proxy& other){`, i.e. you need to remove `const`. This line needs to be changed before installing `RcppThrust`. You can undo the change once `RcppThrust` is installed.
 
 ### Install with CUDA backend
-```{r}
+```r
 devtools::install_github("jtilly/RcppThrust",
                          args = "--configure-args=\"--with-backend=CUDA
                                  --with-cuda-home=/usr/local/cuda-8.0/\"")
 ```
 
 ### Install with OpenMP backend
-```{r}
+```r
 devtools::install_github("jtilly/RcppThrust")
 ```
 
 ### Examples
 
 *Use thrust::sort()*
-```{c++}
+```cpp
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
 #include <thrust/copy.h>
@@ -47,7 +47,7 @@ Rcpp::NumericVector mysort(Rcpp::NumericVector x) {
 }
 ```
 *Use user-defined functor*
-```{c++}
+```cpp
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
 #include <thrust/copy.h>
@@ -82,16 +82,16 @@ Rcpp::NumericVector myfunctor(Rcpp::NumericVector x) {
 ```
 
 ### Performance
-```{r}
+```r
 set.seed(1)
 
 x = runif(1e7)
 
 system.time(y <- sort(x))
-#>    user  system elapsed 
+#>    user  system elapsed
 #>   1.328   0.004   1.332
 system.time(z <- mysort(x))
-#>    user  system elapsed 
+#>    user  system elapsed
 #>   0.036   0.124   0.163
 
 all.equal(y, z)
